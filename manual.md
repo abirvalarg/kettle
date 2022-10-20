@@ -188,7 +188,8 @@ Internally, Kettle uses a virtual stack for all operations. This allows garbage
 collector to see all values at all times. Some operations use *indices* to
 select values from stack. Indices may be *absolute*, going from `0` upwards,
 `0` is the bottom of the stack(value that was pushed the first); or *relative*,
-goint from `-1` downwards, `-1` is the top of the stack.
+goint from `-1` downwards, `-1` is the top of the stack. If index doesn't exist
+in the stack, the interpreter will raise an error with code `stack_corruption`.
 
 By default the stack has capacity for 32 values, this value may be adjusted by
 changing `KTL_VSTACK_CAPACITY` constant in the configuration header file.
