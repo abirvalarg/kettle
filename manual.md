@@ -20,10 +20,16 @@ Only 2 values have the boolean type: `false` and `true`. Those values are
 stored and passed directly.
 
 #### 1.1.3 – `int` and `float`
-Int and float work the same way as in C. By default the interpreter uses long
-and double for those types. Underlying types may be changed in configuration
+`int` and `float` work the same way as in C. By default the interpreter uses `long`
+and `double` for those types. Underlying types may be changed in configuration
 header file before building the interpreter. Those values are stored and passed
 directly.
+
+`int` and `float` may be mixed together in most arithmetic operations. If you
+use 2 `int`s on both sides, the result will also be `int`, except for division
+(`/`), result of which is always `float`. If there's `float` on either side,
+the result is `float`. Integer division(`//`) is an exception and must have
+integers on both sides.
 
 #### 1.1.4 – Strings
 Strings are a immutable sequences of bytes. Any 8-bit value can be stored in a
@@ -173,3 +179,16 @@ atom ::= ident | atom `.` ident | atom `[` expr `]` | atom `(` arglist `)`
 
 arglist ::= [ expr { `,` expr } ]
 ```
+
+## 4 - API
+This section describes the C interface of the language.
+
+### 4.1 - Stack
+Internally, Kettle uses a virtual stack for all operations. This allows garbage
+collector to see all values at all times. Some operations use *indices* to
+select values from stack. Indices may be *absolute*, going from `0` upwards,
+`0` is the bottom of the stack(value that was pushed the first); or *relative*,
+goint from `-1` downwards, `-1` is the top of the stack.
+
+By default the stack has capacity for 32 values, this value may be adjusted by
+changing `KTL_VSTACK_CAPACITY` constant in the configuration header file.
