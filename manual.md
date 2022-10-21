@@ -7,9 +7,9 @@ with other projects and minimal size.
 ### 1.1 – Types and values
 The language has dynamic typing, that means that any variable can hold value of
 any type. All values are 1st-class values, which means that they can be stored
-in variables, passed as arguments to function and be return values. There are 10
-different base types: `nil`, `boolean`, `int`, `float`, `string`, `array`,
-`map`, `object`, `function` and `userdata`.
+in variables, passed as arguments to function and be return values. There are 9
+different base types: `nil`, `boolean`, `int`, `float`, `string`, `table`,
+`object`, `function` and `userdata`.
 
 #### 1.1.1 – `nil`
 `nil` is similar to `null` in many other languages. The only value that has
@@ -37,31 +37,23 @@ string, including zero(`'\0'`). You can interact with them using special
 functions provided by the interpreter. Strings are stored by references to special
 structures that are managed by a garbage collector.
 
-#### 1.1.5 – Arrays
-As in other languages, arrays are used to store multiple values in one
-variable. Arrays don’t have a fixed type which means that they can store any
-values of any types. Arrays are stored and passed by references and managed by
-garbage collector.
+#### 1.1.5 – Tables
+Tables are associative arrays that can use any type for both key and value.
 
-#### 1.1.6 - Maps
-Maps store key-value pairs. Any type can be used for both key and value. Note
-that maps are slower than objects. Maps are stored and passed by references
-and managed by garbage collector.
-
-#### 1.1.7 – Objects
+#### 1.1.6 – Objects
 Objects behave like maps with strings as keys and any types as values, usually
 function. A function in an object is called a method. Unlike in many other
 languages, methods don’t get a reference to the object, so all fields must be
 captured local variables from the constructor. Objects are stored and passed by
 references and managed by garbage collector.
 
-#### 1.1.8 – Functions
+#### 1.1.7 – Functions
 Functions can store either a list of actions to execute or a reference to a
 C-function. They also store captured variables that are inserted into local
 scope before execution of the function. Functions are stored and passed by
 references and managed by garbage collector.
 
-#### 1.1.9 – Userdata
+#### 1.1.8 – Userdata
 Userdata objects are pieces of memory that the interpreter can’t work with,
 only C code can use it. The kettle code is not supposed to operate with raw
 userdata values, they should only be captured by C-functions that use the

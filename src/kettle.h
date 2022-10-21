@@ -11,8 +11,7 @@ typedef enum ktl_Type
     KTL_INT,
     KTL_FLOAT,
     KTL_STRING,
-    KTL_ARRAY,
-    KTL_MAP,
+    KTL_TABLE,
     KTL_OBJECT,
     KTL_FUNCTION,
     KTL_USERDATA
