@@ -10,7 +10,8 @@ typedef struct Test
 } Test;
 
 static Test tests[] = {
-    "state creation", state_creation
+    "state creation", state_creation,
+    "vstack ops", vstack_push_pop
 };
 
 int main()

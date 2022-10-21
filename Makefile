@@ -1,7 +1,7 @@
 CC=gcc
 
 DEFINES=
-CFLAGS=-std=gnu11 -Wall -Wpedantic -c $(addprefix -D, $(DEFINES))
+CFLAGS=-std=gnu11 -Wall -Wpedantic -fPIC -c $(addprefix -D, $(DEFINES))
 LFLAGS=
 
 TARGET=debug

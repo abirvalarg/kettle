@@ -1,5 +1,14 @@
 #pragma once
 
+#define ASSERT(cond, msg) if(!(cond)) { return (Result){ .code = 1, .message = (msg), .dyn_msg = 0 }; }
+#define ASSERT_CLOSE(cond, msg) if(!(cond)) { ktl_State_del(ktl); return (Result){ .code = 1, .message = (msg), .dyn_msg = 0 }; }
+
+#define OK ((Result){ \
+        .code = 0,  \
+        .message = 0,   \
+        .dyn_msg = 0    \
+    })
+
 typedef struct Result
 {
     int code;
@@ -8,3 +17,4 @@ typedef struct Result
 } Result;
 
 Result state_creation();
+Result vstack_push_pop();
