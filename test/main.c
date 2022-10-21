@@ -11,7 +11,9 @@ typedef struct Test
 
 static Test tests[] = {
     "state creation", state_creation,
-    "vstack ops", vstack_push_pop
+    "vstack ops", vstack_push_pop,
+    "ktl_StrMap", strmap,
+    "ktl_StrMap with capacity", strmap_with_capacity
 };
 
 int main()
