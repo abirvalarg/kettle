@@ -27,6 +27,6 @@ void ktl_String_del(ktl_State *ktl, ktl_GCHeader *_obj)
     ktl_String *str = (ktl_String*)_obj;
     if(str->content)
         free(str->content);
-    free(str);
     ktl->mem_usage -= str->len + sizeof(ktl_String);
+    free(str);
 }
