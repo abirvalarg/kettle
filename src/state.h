@@ -38,6 +38,7 @@ struct ktl_State
     ktl_VStackNode *vstack;
     ktl_Context *context;
     ktl_CFunction on_mem_err;
+    ktl_CFunction on_err;
     ktl_StrMap global;
     unsigned vstack_size;
     ktl_GCState gc_state;
@@ -48,3 +49,6 @@ void ktl_pop_context(ktl_State *ktl);
 
 /// @brief Push a value on vstack
 void ktl_push_anon_value(ktl_State *ktl, ktl_Value value);
+
+/// @brief Get a value from vstack
+ktl_Value ktl_get_value(ktl_State *ktl, int idx);

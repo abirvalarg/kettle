@@ -23,6 +23,7 @@ ktl_State *ktl_State_new()
         ktl_StrMap_init(&ktl->global, 0);
         ktl->context = 0;
         ktl->on_mem_err = 0;
+        ktl->on_err = 0;
     }
     return ktl;
 }
@@ -53,10 +54,17 @@ void ktl_State_del(ktl_State *ktl)
     free(ktl);
 }
 
+
 unsigned ktl_top(ktl_State *ktl)
 {
     return ktl->vstack_size;
 }
+
+ktl_Type ktl_get_type(ktl_State *ktl, int idx)
+{
+    return ktl_get_value(ktl, idx).type;
+}
+
 
 void ktl_pop(ktl_State *ktl)
 {
@@ -132,8 +140,8 @@ void ktl_push_anon_value(ktl_State *ktl, ktl_Value value)
     if(ktl->vstack_size == KTL_VSTACK_CAPACITY)
     {
         ktl_clear_vstack(ktl);
-        fprintf(stderr, "vstack overflow\n");
-        abort();
+        ktl_push_std_err(ktl, KTL_ERR_OVERFLOW);
+        ktl_err(ktl);
     }
 
     ktl->vstack[ktl->vstack_size++] = (ktl_VStackNode){
@@ -141,4 +149,17 @@ void ktl_push_anon_value(ktl_State *ktl, ktl_Value value)
         .kind = KTL_ANON,
         .name = 0
     };
+}
+
+ktl_Value ktl_get_value(ktl_State *ktl, int idx)
+{
+    if(idx < 0)
+        idx += ktl->vstack_size;
+    
+    if(idx < 0 || idx >= ktl->vstack_size)
+    {
+        ktl_push_std_err(ktl, KTL_ERR_STACK);
+        ktl_err(ktl);
+    }
+    return ktl->vstack[idx].value;
 }

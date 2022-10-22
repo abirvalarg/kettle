@@ -21,11 +21,12 @@ typedef enum ktl_Type
 
 typedef enum ktl_StdErr
 {
-    KTL_ERR_STACK
+    KTL_ERR_STACK,
+    KTL_ERR_OVERFLOW
 } ktl_StdErr;
 
-const char *const KTL_ERR_CODES[1];
-const char *const KTL_ERR_MSGS[1];
+extern const char *const KTL_ERR_CODES[2];
+extern const char *const KTL_ERR_MSGS[2];
 
 /**
  @brief Creates a new state object
@@ -46,6 +47,9 @@ void ktl_State_del(ktl_State *state);
  */
 unsigned ktl_top(ktl_State *ktl);
 
+/// @brief Get type of value at given index
+ktl_Type ktl_get_type(ktl_State *ktl, int idx);
+
 
 /**
  @brief Remove top element from vstack
@@ -56,6 +60,7 @@ void ktl_pop(ktl_State *ktl);
 
 /// @brief Remove all values from vstack
 void ktl_clear_vstack(ktl_State *ktl);
+
 
 /// @brief Push `nil` to vstack
 void ktl_push_nil(ktl_State *ktl);
@@ -76,7 +81,17 @@ void ktl_push_std_err(ktl_State *ktl, ktl_StdErr err);
  */
 ktl_CFunction ktl_on_mem_err(ktl_State *ktl, ktl_CFunction handler);
 
+/**
+ @brief Set a new error handler
+ @returns old error handler
+ */
+ktl_CFunction ktl_on_err(ktl_State *ktl, ktl_CFunction handler);
+
 
 /// @brief Raise a memory error
 __attribute__((noreturn))
 void ktl_mem_err(ktl_State *ktl);
+
+/// @brief Raise an error using the top value on vstack as error object
+__attribute__((noreturn))
+void ktl_err(ktl_State *ktl);
