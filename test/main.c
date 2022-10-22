@@ -13,7 +13,8 @@ static Test tests[] = {
     "state creation", state_creation,
     "vstack ops", vstack_push_pop,
     "ktl_StrMap", strmap,
-    "ktl_StrMap with capacity", strmap_with_capacity
+    "ktl_StrMap with capacity", strmap_with_capacity,
+    "vstack overflow", vstack_overflow
 };
 
 int main()

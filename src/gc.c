@@ -33,6 +33,7 @@ void ktl_gc(ktl_State *ktl)
                 break;
             }
         }
+        cur = cur->next;
     }
 
     mark(ktl);

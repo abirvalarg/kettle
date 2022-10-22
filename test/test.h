@@ -20,3 +20,4 @@ Result state_creation();
 Result vstack_push_pop();
 Result strmap();
 Result strmap_with_capacity();
+Result vstack_overflow();
