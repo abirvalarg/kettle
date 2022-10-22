@@ -6,7 +6,7 @@ LFLAGS=
 
 TARGET=debug
 
-_CORE_OBJ=gc.o state.o strmap.o value.o
+_CORE_OBJ=action.c gc.o state.o strmap.o value.o
 
 LIB_OBJ=$(addprefix target/$(TARGET)/obj/, $(_CORE_OBJ))
 LIB_T=target/$(TARGET)/libkettle.so

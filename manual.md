@@ -143,7 +143,7 @@ in text mode that may distort those characters. Use `\xXX` instead.
 ## 3 - The complete syntax of Kettle
 This section contains the complete syntax of Kettle programmming language in
 BNF notation. `{ stmt }` means any number of `stmt`; `[ smth ]` means 0 or 1
-`stmt`.
+`stmt`; `one|another` meant either `one` or `another`.
 
 ```
 chunk ::= { stmt }
@@ -155,9 +155,10 @@ stmt ::= `;`
     | atom `.` ident `=` expr
     | atom `[` expr `]` = expr
     | `if` expr block { `elseif` expr block } [ `else` block ]
-    | `while` expr block
-    | `for` ident `in` expr block
+    | [ ident `:` ] `while` expr block
+    | [ ident `:` ] `for` ident `in` expr block
     | `fn` ident `(` arglist `)` [ `capture` `(` arglist `)` ] block
+    | `break` [ ident ]
     | `return` expr
 
 expr ::= expr1 { `||` expr1 }
