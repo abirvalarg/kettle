@@ -1,5 +1,6 @@
 #include "state.h"
 #include "kettle.h"
+#include "object.h"
 #include <malloc.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -88,6 +89,15 @@ void ktl_push_boolean(ktl_State *ktl, char value)
     ktl_push_anon_value(ktl, (ktl_Value){
         .type = KTL_BOOLEAN,
         .value = { .as_int = value }
+    });
+}
+
+void ktl_create_object(ktl_State *ktl, size_t capacity)
+{
+    ktl_Object *obj = ktl_Object_with_capacity(ktl, capacity);
+    ktl_push_anon_value(ktl, (ktl_Value){
+        .type = KTL_OBJECT,
+        .value = { .as_obj = (ktl_GCHeader*)obj }
     });
 }
 
