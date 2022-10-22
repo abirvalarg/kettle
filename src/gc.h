@@ -21,3 +21,11 @@ void ktl_gc_check(ktl_State *ktl);
 
 /// @brief Collect garbage unconditionally
 void ktl_gc(ktl_State *ktl);
+
+/**
+ @brief Prepare an object for garbage collection by calling the `__gc` method
+ */
+void ktl_Object_gc(ktl_GCHeader *_obj);
+
+/// @brief Delete the object freeing all alocated memory
+void ktl_Object_del(ktl_GCHeader *_obj);

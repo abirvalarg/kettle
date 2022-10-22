@@ -21,6 +21,7 @@ ktl_State *ktl_State_new()
         ktl->vstack_size = 0;
         ktl_StrMap_init(&ktl->global, 0);
         ktl->context = 0;
+        ktl->on_mem_err = 0;
     }
     return ktl;
 }

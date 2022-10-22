@@ -1,7 +1,9 @@
 #include "gc.h"
+#include "kettle.h"
 #include "state.h"
 #include "strmap.h"
 #include <malloc.h>
+#include <stdlib.h>
 
 void ktl_gc_check(ktl_State *ktl)
 {
@@ -44,7 +46,23 @@ void ktl_gc(ktl_State *ktl)
         ctx = ctx->next;
     }
 
-    // TODO call destructors for different types
+    cur = ktl->gc_head;
+    while(cur)
+    {
+        if(!cur->mark)
+        {
+            switch(cur->type)
+            {
+            case KTL_OBJECT:
+                ktl_Object_gc(cur);
+                break;
+            
+            default:
+                fprintf(stderr, "Attempt to GC an unsupported type\n");
+                abort();
+            }
+        }
+    }
 
     // sweep
     cur = ktl->gc_head;
@@ -54,7 +72,16 @@ void ktl_gc(ktl_State *ktl)
         if(!cur->mark)
         {
             ktl_GCHeader *next = *last_slot = cur->next;
-            free(cur);
+            switch(cur->type)
+            {
+            case KTL_OBJECT:
+                ktl_Object_del(cur);
+                break;
+            
+            default:
+                fprintf(stderr, "Attempt to GC an unsupported type\n");
+                abort();
+            }
             cur = next;
         }
         else

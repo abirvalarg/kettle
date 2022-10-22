@@ -37,6 +37,7 @@ struct ktl_State
     size_t gc_threshold;
     ktl_VStackNode *vstack;
     ktl_Context *context;
+    ktl_CFunction on_mem_err;
     ktl_StrMap global;
     unsigned vstack_size;
     ktl_GCState gc_state;

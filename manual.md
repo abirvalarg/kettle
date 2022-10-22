@@ -107,8 +107,8 @@ Kettle is a case-sensitive language. `break` is a keyword but `Break` and
 Following strings denote other valid tokens:
 ```
 =   +   -   *   /   //  %   ^   &   &&  |
-||  !   <   <<  >   >>  ==  !=  >= <=   ~
-(   )   {   }   [   ]   ;   ,   .
+||  !   <   <<  >   >>  ==  !=  >=  <=  ~
+(   )   {   }   [   ]   ;   ,   .   :
 ```
 
 As in many other scripting programming languages, comments in Kettle start

@@ -3,6 +3,7 @@
 #include "kettle_cfg.h"
 
 typedef struct ktl_State ktl_State;
+typedef void (*ktl_CFunction)(ktl_State *ktl);
 
 typedef enum ktl_Type
 {
@@ -29,11 +30,13 @@ ktl_State *ktl_State_new();
  */
 void ktl_State_del(ktl_State *state);
 
+
 /**
  @brief Get the size of the vstack
  @returns the number of elements on vstack
  */
 unsigned ktl_top(ktl_State *ktl);
+
 
 /**
  @brief Remove top element from vstack
@@ -50,3 +53,15 @@ void ktl_push_nil(ktl_State *ktl);
 
 /// @brief Push a boolean value to vstack
 void ktl_push_boolean(ktl_State *ktl, char value);
+
+
+/**
+ @brief Set a new memory error handler
+ @returns old error handler
+ */
+ktl_CFunction ktl_on_mem_err(ktl_State *ktl, ktl_CFunction handler);
+
+
+/// @brief Raise a memory error
+__attribute__((noreturn))
+void ktl_mem_err(ktl_State *ktl);
