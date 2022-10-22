@@ -5,6 +5,8 @@
 #include <malloc.h>
 #include <stdlib.h>
 
+static void mark(ktl_State *ktl);
+
 void ktl_gc_check(ktl_State *ktl)
 {
     if(ktl->gc_state == KTL_GC_RUNNING && ktl->mem_usage >= ktl->gc_threshold)
@@ -12,6 +14,59 @@ void ktl_gc_check(ktl_State *ktl)
 }
 
 void ktl_gc(ktl_State *ktl)
+{
+    mark(ktl);
+
+    // finalize
+    ktl_GCHeader *cur = ktl->gc_head;
+    while(cur)
+    {
+        if(!cur->mark)
+        {
+            switch(cur->type)
+            {
+            case KTL_OBJECT:
+                ktl_Object_gc(ktl, cur);
+                break;
+            
+            default:
+                break;
+            }
+        }
+    }
+
+    mark(ktl);
+
+    // sweep
+    cur = ktl->gc_head;
+    ktl_GCHeader **last_slot = &ktl->gc_head;
+    while(cur)
+    {
+        if(!cur->mark)
+        {
+            ktl_GCHeader *next = *last_slot = cur->next;
+            switch(cur->type)
+            {
+            case KTL_STRING:
+                ktl_String_del(ktl, cur);
+                break;
+
+            case KTL_OBJECT:
+                ktl_Object_del(ktl, cur);
+                break;
+            
+            default:
+                fprintf(stderr, "Attempt to GC an unsupported type\n");
+                abort();
+            }
+            cur = next;
+        }
+        else
+            cur = cur->next;
+    }
+}
+
+static void mark(ktl_State *ktl)
 {
     // clear all marks
     ktl_GCHeader *cur = ktl->gc_head;
@@ -44,50 +99,5 @@ void ktl_gc(ktl_State *ktl)
             ktl_Value_mark(ctx->locals[i]->value);
 
         ctx = ctx->next;
-    }
-
-    cur = ktl->gc_head;
-    while(cur)
-    {
-        if(!cur->mark)
-        {
-            switch(cur->type)
-            {
-            case KTL_OBJECT:
-                ktl_Object_gc(ktl, cur);
-                break;
-            
-            default:
-                break;
-            }
-        }
-    }
-
-    // sweep
-    cur = ktl->gc_head;
-    ktl_GCHeader **last_slot = &ktl->gc_head;
-    while(cur)
-    {
-        if(!cur->mark)
-        {
-            ktl_GCHeader *next = *last_slot = cur->next;
-            switch(cur->type)
-            {
-            case KTL_STRING:
-                ktl_String_del(ktl, cur);
-                break;
-
-            case KTL_OBJECT:
-                ktl_Object_del(ktl, cur);
-                break;
-            
-            default:
-                fprintf(stderr, "Attempt to GC an unsupported type\n");
-                abort();
-            }
-            cur = next;
-        }
-        else
-            cur = cur->next;
     }
 }
