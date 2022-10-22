@@ -54,12 +54,11 @@ void ktl_gc(ktl_State *ktl)
             switch(cur->type)
             {
             case KTL_OBJECT:
-                ktl_Object_gc(cur);
+                ktl_Object_gc(ktl, cur);
                 break;
             
             default:
-                fprintf(stderr, "Attempt to GC an unsupported type\n");
-                abort();
+                break;
             }
         }
     }
@@ -74,8 +73,12 @@ void ktl_gc(ktl_State *ktl)
             ktl_GCHeader *next = *last_slot = cur->next;
             switch(cur->type)
             {
+            case KTL_STRING:
+                ktl_String_del(ktl, cur);
+                break;
+
             case KTL_OBJECT:
-                ktl_Object_del(cur);
+                ktl_Object_del(ktl, cur);
                 break;
             
             default:
