@@ -103,6 +103,22 @@ void ktl_push_boolean(ktl_State *ktl, char value)
     });
 }
 
+void ktl_push_int(ktl_State *ktl, ktl_Int value)
+{
+    ktl_push_anon_value(ktl, (ktl_Value){
+        .type = KTL_INT,
+        .value = { .as_int = value }
+    });
+}
+
+void ktl_push_float(ktl_State *ktl, ktl_Float value)
+{
+    ktl_push_anon_value(ktl, (ktl_Value){
+        .type = KTL_FLOAT,
+        .value = { .as_float = value }
+    });
+}
+
 void ktl_push_cstring(ktl_State *ktl, const char *const value)
 {
     ktl_String *str = ktl_String_new(ktl, value, strlen(value));
@@ -121,6 +137,60 @@ void ktl_create_object(ktl_State *ktl, size_t capacity)
     });
 }
 
+
+char ktl_get_bool(ktl_State *ktl, int idx)
+{
+    ktl_Value val = ktl_get_value(ktl, idx);
+    switch(val.type)
+    {
+    case KTL_NIL:
+        return 0;
+    
+    case KTL_BOOLEAN:
+    case KTL_INT:
+        return val.value.as_int != 0;
+    
+    case KTL_FLOAT:
+        return val.value.as_float != 0.0;
+    
+    default:
+        return 1;
+    }
+}
+
+ktl_Int ktl_get_int(ktl_State *ktl, int idx)
+{
+    ktl_Value val = ktl_get_value(ktl, idx);
+    switch(val.type)
+    {
+    case KTL_INT:
+        return val.value.as_int;
+    
+    case KTL_FLOAT:
+        return val.value.as_float;
+    
+    default:
+        ktl_push_std_err(ktl, KTL_ERR_INVALID_CAST);
+        ktl_err(ktl);
+    }
+}
+
+ktl_Float ktl_get_float(ktl_State *ktl, int idx)
+{
+    ktl_Value val = ktl_get_value(ktl, idx);
+    switch(val.type)
+    {
+    case KTL_INT:
+        return val.value.as_int;
+    
+    case KTL_FLOAT:
+        return val.value.as_float;
+    
+    default:
+        ktl_push_std_err(ktl, KTL_ERR_INVALID_CAST);
+        ktl_err(ktl);
+    }
+}
 
 char *ktl_get_string(ktl_State *ktl, int idx, size_t *len)
 {

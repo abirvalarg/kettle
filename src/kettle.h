@@ -69,6 +69,12 @@ void ktl_push_nil(ktl_State *ktl);
 /// @brief Push a boolean value to vstack
 void ktl_push_boolean(ktl_State *ktl, char value);
 
+/// @brief Push a integer value to vstack
+void ktl_push_int(ktl_State *ktl, ktl_Int value);
+
+/// @brief Push a float value to vstack
+void ktl_push_float(ktl_State *ktl, ktl_Float value);
+
 /// @brief Push a string to vstack
 void ktl_push_cstring(ktl_State *ktl, const char *const value);
 
@@ -78,6 +84,29 @@ void ktl_create_object(ktl_State *ktl, size_t capacity);
 /// @brief Create a new error object and push it on stack
 void ktl_push_std_err(ktl_State *ktl, ktl_StdErr err);
 
+
+/**
+ @brief Get a boolean value at given index
+ 
+ Works for all types
+
+ @returns 0 only for `nil`, `false`, `0` and `0.0`. 1 for anything else
+ */
+char ktl_get_bool(ktl_State *ktl, int idx);
+
+/**
+ @brief Get value of integer at given index
+
+ This function rounds float values
+ */
+ktl_Int ktl_get_int(ktl_State *ktl, int idx);
+
+/**
+ @brief Get value of float at given index
+
+ This function returns int values as floats
+ */
+ktl_Float ktl_get_float(ktl_State *ktl, int idx);
 
 /**
  @brief Get value of a string at given index
