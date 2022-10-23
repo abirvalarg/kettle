@@ -6,7 +6,8 @@
 
 jmp_buf err_jmp_buf;
 
-static void on_err(ktl_State *ktl);
+static void on_err_in_overflow(ktl_State *ktl);
+static void on_err_in_strings(ktl_State *ktl);
 
 Result state_creation()
 {
@@ -41,7 +42,7 @@ Result vstack_overflow()
     int code = setjmp(err_jmp_buf);
     if(code == 0)
     {
-        ktl_on_err(ktl, on_err);
+        ktl_on_err(ktl, on_err_in_overflow);
         for(int i = 0; i < KTL_VSTACK_CAPACITY; i++)
             ktl_push_nil(ktl);
         
@@ -54,10 +55,19 @@ Result vstack_overflow()
             .dyn_msg = 0
         };
     }
-    else
+    else if(code == 1)
     {
         ktl_State_del(ktl);
         return OK;
+    }
+    else
+    {
+        ktl_State_del(ktl);
+        return (Result){
+            .code = 1,
+            .message = "Wrong error object",
+            .dyn_msg = 0
+        };
     }
 }
 
@@ -81,11 +91,43 @@ Result strings()
         "Pushed a wrong value to stack"
     );
 
-    ktl_State_del(ktl);
-    return OK;
+    ktl_clear_vstack(ktl);
+    ktl_push_nil(ktl);
+
+    int code = setjmp(err_jmp_buf);
+    if(code == 0)
+    {
+        ktl_on_err(ktl, on_err_in_strings);
+        ktl_get_string(ktl, 0, 0);
+        ktl_State_del(ktl);
+        return (Result){
+            .code = 1,
+            .message = "Didn't case an error",
+            .dyn_msg = 0
+        };
+    }
+    else if(code == 1)
+    {
+        ktl_State_del(ktl);
+        return OK;
+    }
+    else
+    {
+        ktl_State_del(ktl);
+        return (Result){
+            .code = 1,
+            .message = "Wrong error object",
+            .dyn_msg = 0
+        };
+    }
 }
 
-static void on_err(ktl_State *ktl)
+static void on_err_in_overflow(ktl_State *ktl)
+{
+    longjmp(err_jmp_buf, 1);
+}
+
+static void on_err_in_strings(ktl_State *ktl)
 {
     longjmp(err_jmp_buf, 1);
 }
