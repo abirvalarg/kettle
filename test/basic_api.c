@@ -2,6 +2,7 @@
 #include "../src/kettle.h"
 #include <malloc.h>
 #include <setjmp.h>
+#include <string.h>
 
 jmp_buf err_jmp_buf;
 
@@ -58,6 +59,30 @@ Result vstack_overflow()
         ktl_State_del(ktl);
         return OK;
     }
+}
+
+Result strings()
+{
+    ktl_State *ktl = ktl_State_new();
+    ASSERT(ktl, "couldn't create a state");
+
+    static const char *const test_str = "hello, Kettle";
+    ktl_push_cstring(ktl, test_str);
+
+    ASSERT_CLOSE(
+        ktl_top(ktl) == 1 && ktl_get_type(ktl, 0) == KTL_STRING,
+        "Failed to push a string"
+    );
+
+    size_t len;
+    const char *inner_str = ktl_get_string(ktl, 0, &len);
+    ASSERT_CLOSE(
+        len == strlen(test_str) && !memcmp(test_str, inner_str, len),
+        "Pushed a wrong value to stack"
+    );
+
+    ktl_State_del(ktl);
+    return OK;
 }
 
 static void on_err(ktl_State *ktl)

@@ -22,11 +22,12 @@ typedef enum ktl_Type
 typedef enum ktl_StdErr
 {
     KTL_ERR_STACK,
-    KTL_ERR_OVERFLOW
+    KTL_ERR_OVERFLOW,
+    KTL_ERR_INVALID_CAST
 } ktl_StdErr;
 
-extern const char *const KTL_ERR_CODES[2];
-extern const char *const KTL_ERR_MSGS[2];
+extern const char *const KTL_ERR_CODES[];
+extern const char *const KTL_ERR_MSGS[];
 
 /**
  @brief Creates a new state object
@@ -68,11 +69,25 @@ void ktl_push_nil(ktl_State *ktl);
 /// @brief Push a boolean value to vstack
 void ktl_push_boolean(ktl_State *ktl, char value);
 
+/// @brief Push a string to vstack
+void ktl_push_cstring(ktl_State *ktl, const char *const value);
+
 /// @brief Create a new object with given capacity and push it on vstack
 void ktl_create_object(ktl_State *ktl, size_t capacity);
 
 /// @brief Create a new error object and push it on stack
 void ktl_push_std_err(ktl_State *ktl, ktl_StdErr err);
+
+
+/**
+ @brief Get value of a string at given index
+
+ @param len is the pointer to the variable where the length of the string
+    will be stored. 0 if the length should be ignored
+
+ May raise `stack_corruption` or `invalid_cast` errors
+ */
+char *ktl_get_string(ktl_State *ktl, int idx, size_t *len);
 
 
 /**

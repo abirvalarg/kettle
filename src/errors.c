@@ -3,14 +3,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-const char *const KTL_ERR_CODES[2] = {
+const char *const KTL_ERR_CODES[] = {
     "stack_corruption",
-    "vstack_overflow"
+    "vstack_overflow",
+    "invalid_cast"
 };
 
-const char *const KTL_ERR_MSGS[2] = {
+const char *const KTL_ERR_MSGS[] = {
     "Stack was corrupted",
-    "Too many values on the vstack"
+    "Too many values on the vstack",
+    "Invalid cast"
 };
 
 void ktl_push_std_err(ktl_State *ktl, ktl_StdErr err)

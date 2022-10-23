@@ -1,9 +1,11 @@
 #include "state.h"
 #include "kettle.h"
 #include "object.h"
+#include "string.h"
 #include <malloc.h>
 #include <stdio.h>
-#include <stdlib.h>
+// #include <stdlib.h>
+#include <string.h>
 
 ktl_State *ktl_State_new()
 {
@@ -84,6 +86,7 @@ void ktl_clear_vstack(ktl_State *ktl)
     ktl->vstack_size = 0;
 }
 
+
 void ktl_push_nil(ktl_State *ktl)
 {
     ktl_push_anon_value(ktl, (ktl_Value){
@@ -100,6 +103,15 @@ void ktl_push_boolean(ktl_State *ktl, char value)
     });
 }
 
+void ktl_push_cstring(ktl_State *ktl, const char *const value)
+{
+    ktl_String *str = ktl_String_new(ktl, value, strlen(value));
+    ktl_push_anon_value(ktl, (ktl_Value){
+        .type = KTL_STRING,
+        .value = { .as_obj = (ktl_GCHeader*)str }
+    });
+}
+
 void ktl_create_object(ktl_State *ktl, size_t capacity)
 {
     ktl_Object *obj = ktl_Object_with_capacity(ktl, capacity);
@@ -108,6 +120,22 @@ void ktl_create_object(ktl_State *ktl, size_t capacity)
         .value = { .as_obj = (ktl_GCHeader*)obj }
     });
 }
+
+
+char *ktl_get_string(ktl_State *ktl, int idx, size_t *len)
+{
+    ktl_Value val = ktl_get_value(ktl, idx);
+    if(val.type != KTL_STRING)
+    {
+        ktl_push_std_err(ktl, KTL_ERR_INVALID_CAST);
+        ktl_err(ktl);
+    }
+    ktl_String *str = (ktl_String*)val.value.as_obj;
+    if(len)
+        *len = str->len;
+    return str->content;
+}
+
 
 void ktl_pop_context(ktl_State *ktl)
 {
