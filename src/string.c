@@ -14,8 +14,8 @@ ktl_String *ktl_String_new(ktl_State *ktl, const char *const content, size_t len
     ktl->gc_head = (ktl_GCHeader*)str;
     str->gc.type = KTL_STRING;
     ktl->mem_usage += sizeof(ktl_String);
-    str->content = malloc(len);
-    if(!str->content)
+    str->content = len ? malloc(len) : 0;
+    if(len && !str->content)
         ktl_mem_err(ktl);
     ktl->mem_usage += len;
     memcpy(str->content, content, len);
